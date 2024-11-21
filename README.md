@@ -51,7 +51,8 @@ For each step in the simulation, the complexity is **O(n^2 x k)**, where **k** i
 
 Example: 
 - for *n = 5 & k = 9* we'll have **O(5^2 * 9) = 225**
-- but for *n = 1000 & k = 9* we'll have **O(1000^2 * 9) = 9.000.000**
+- but for *n = 1.000 & k = 9* we'll have **O(1.000^2 * 9) = 9.000.000**
+- and for *n = 1.000.000 & k = 9* we'll have **O(1.000.000^2 * 9) = 9.000.000.000.000**
 
 ### Justification for Exploiting Parallelism
 
