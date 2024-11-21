@@ -26,19 +26,19 @@ Transition rules:
 
 In the classical SIR model, there are several components that can benefit from parallel computation:
 
-**1. Iterating through each individual in the population**
+#### **1. Iterating through each individual in the population**
 
   Each individual has an initial state and a potential transition (e.g., from susceptible to infected, or from infected to recovered). The complexity of this process  is O(n x k), where:
 - **n** is the number of individuals
 - **k** is the average number of neighbors analyzed for each individual
   
-**2. Analyzing the state of each individual**
+#### **2. Analyzing the state of each individual**
 
   Each individual must evaluate the states of its neighbors to determine whether it will become infected. The following calculations are necessary:
 - compute the probability of infection
 - verify the grid boundaries and identify valid neighbors
   
-**3. Analyzing statistical data**
+#### **3. Analyzing statistical data**
 
   Calculate the proportions of infected, recovered, or susceptible individuals to generate statistics throughout the simulation.
 
@@ -57,19 +57,19 @@ Example:
 
 Parallel computing is justified due to the characteristics of the problem:
 
-**1. Cell independence**
+#### **1. Cell independence**
 
   Each cell (individual) can be evaluated independently within a time step. This makes the problem ideal for parallel computing, especially on GPUs.
   
-**2. Large grid operation**
+#### **2. Large grid operation**
 
   GPUs are optimized for repetitive computations on structured data (e.g. 2D/3D grids).
   
-**3. Parallel access to neighbors**
+#### **3. Parallel access to neighbors**
 
   Evaluation of neighbors for each cell can be distributed across multiple threads.
   
-**4. Massive acceleration of execution time**
+#### **4. Massive acceleration of execution time**
 
   On a CPU, a simulation for a million cells can take minutes or even hours, but on a well-optimized GPU, this time can be reduced to a few seconds.
 
