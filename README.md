@@ -25,6 +25,7 @@ Transition rules:
 ### Algorithmic Components Requiring Parallel Computation
 
 In the classical SIR model, there are several components that can benefit from parallel computation:
+
 **1. Iterating through each individual in the population**
 
   Each individual has an initial state and a potential transition (e.g., from susceptible to infected, or from infected to recovered). The complexity of this process  is O(n x k), where:
