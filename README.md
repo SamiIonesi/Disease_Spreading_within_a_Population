@@ -47,7 +47,7 @@ The population is represented as a two-dimensional grid, forming an **n x n** ma
 
 Thus, there are **n^2** individuals in the population. <br>
 
-For each step in the simulation, the complexity is **O(n^2 x k)**, where **k** is the number of neighbors analyzed per individual
+For each step in the simulation, the complexity is **O(n^2 x k)**, where **k** is the number of neighbors analyzed per individual.
 
 Example: 
 - for *n = 5 & k = 9* we'll have **O(5^2 * 9) = 225**
