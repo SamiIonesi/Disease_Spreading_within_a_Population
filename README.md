@@ -12,6 +12,7 @@ This type of simulation is used to understand how diseases spread, test control 
 Simulations involving large populations (tens of thousands or even millions of individuals) require a high computational workload, making them well-suited for acceleration through parallel computing. <br>
 
 ### Epidemological model
+
 The SIR model is used, which assumes that individuals can exist in three distinct states:
 - S (Susceptible): Healthy individuals who can be infected.
 - I (Infected): Individuals who are sick and can infect others.
@@ -22,18 +23,22 @@ Transition rules:
 - An infected individual transitions to the recovered state after an average infection duration. <br>
 
 ### Algorithmic Components Requiring Parallel Computation
+
 In the classical SIR model, there are several components that can benefit from parallel computation:
 **1. Iterating through each individual in the population**
+
   Each individual has an initial state and a potential transition (e.g., from susceptible to infected, or from infected to recovered). The complexity of this process  is O(n x k), where:
 - **n** is the number of individuals
 - **k** is the average number of neighbors analyzed for each individual
   
 **2. Analyzing the state of each individual**
+
   Each individual must evaluate the states of its neighbors to determine whether it will become infected. The following calculations are necessary:
 - compute the probability of infection
 - verify the grid boundaries and identify valid neighbors
   
 **3. Analyzing statistical data**
+
   Calculate the proportions of infected, recovered, or susceptible individuals to generate statistics throughout the simulation.
 
 ### Problem complexity
