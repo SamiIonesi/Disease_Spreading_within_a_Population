@@ -54,16 +54,24 @@ Example:
 - but for *n = 1000 & k = 9* we'll have **O(1000^2 * 9) = 9.000.000**
 
 ### Justification for Exploiting Parallelism
-Parallel computing is justified due to the characteristics of the problem:
-**1. Cell independence**
-  Each cell (individual) can be evaluated independently within a time step. This makes the problem ideal for parallel computing, especially on GPUs.
-**2. Large grid operation**
-  GPUs are optimized for repetitive computations on structured data (e.g. 2D/3D grids).
-**3. Parallel access to neighbors**
-  Evaluation of neighbors for each cell can be distributed across multiple threads.
-**4. Massive acceleration of execution time**
-  On a CPU, a simulation for a million cells can take minutes or even hours, but on a well-optimized GPU, this time can be reduced to a few seconds.
 
+Parallel computing is justified due to the characteristics of the problem:
+
+**1. Cell independence**
+
+  Each cell (individual) can be evaluated independently within a time step. This makes the problem ideal for parallel computing, especially on GPUs.
+  
+**2. Large grid operation**
+
+  GPUs are optimized for repetitive computations on structured data (e.g. 2D/3D grids).
+  
+**3. Parallel access to neighbors**
+
+  Evaluation of neighbors for each cell can be distributed across multiple threads.
+  
+**4. Massive acceleration of execution time**
+
+  On a CPU, a simulation for a million cells can take minutes or even hours, but on a well-optimized GPU, this time can be reduced to a few seconds.
 
 ## Methods to solve the problem
 
