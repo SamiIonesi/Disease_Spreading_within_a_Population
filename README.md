@@ -86,7 +86,7 @@ A simulator for modeling the spread of COVID-19. It includes an advanced epidemi
 
 #### [3. AnyLogic](https://www.anylogic.com/)
 
-&nbsp A commercial simulation platform that integrates agent-based models. It uses parallel computing to simulate large population dynamics and disease spread.
+A commercial simulation platform that integrates agent-based models. It uses parallel computing to simulate large population dynamics and disease spread.
 
 ## Methods to solve the problem
 
