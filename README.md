@@ -43,6 +43,9 @@ In the classical SIR model, there are several components that can benefit from p
   Calculate the proportions of infected, recovered, or susceptible individuals to generate statistics throughout the simulation.
 
 ### Problem complexity
+
+![Desese_Table](https://github.com/user-attachments/assets/682c639f-3716-4e6d-83e1-4a05046920da)
+
 The population is represented as a two-dimensional grid, forming an **n x n** matrix. <br>
 
 Thus, there are **n^2** individuals in the population. <br>
