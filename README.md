@@ -44,7 +44,7 @@ In the classical SIR model, there are several components that can benefit from p
 
 ### Problem complexity
 
-![Desese_Table](https://github.com/user-attachments/assets/682c639f-3716-4e6d-83e1-4a05046920da)
+![Desese_Table](https://github.com/user-attachments/assets/a6d5562e-c769-4789-952a-1046db17104d)
 
 The population is represented as a two-dimensional grid, forming an **n x n** matrix. <br>
 
