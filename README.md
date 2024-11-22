@@ -78,15 +78,15 @@ Parallel computing is justified due to the characteristics of the problem:
 
 #### [1. EpiSimdemics](https://ieeexplore.ieee.org/document/5214892)
 
-  An efficient algorithm for simulating the spread of infectious disease over large realistic social networks
+    An efficient algorithm for simulating the spread of infectious disease over large realistic social networks
 
 #### [2. COVIDSim](https://github.com/mrc-ide/covid-sim)
 
-  A simulator for modeling the spread of COVID-19. It includes an advanced epidemiological model implemented in parallel to study lockdown and vaccination strategies.
+    A simulator for modeling the spread of COVID-19. It includes an advanced epidemiological model implemented in parallel to study lockdown and vaccination strategies.
 
 #### [3. AnyLogic](https://www.anylogic.com/)
 
-  A commercial simulation platform that integrates agent-based models. It uses parallel computing to simulate large population dynamics and disease spread.
+    A commercial simulation platform that integrates agent-based models. It uses parallel computing to simulate large population dynamics and disease spread.
 
 ## Methods to solve the problem
 
