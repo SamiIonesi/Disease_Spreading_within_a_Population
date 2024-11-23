@@ -93,4 +93,9 @@ A commercial simulation platform that integrates agent-based models. It uses par
 
 ## Methods to solve the problem
 
+### [1. CPU Naive Solution](https://github.com/SamiIonesi/Disease_Spreading_within_a_Population/blob/main/CPU_Naive_Solution.cpp)
+  This solution is based on approaching and solving this problem using single-threaded CPU.
+### 2. GPU Naive Solution
+### 3. GPU Improved Solution
+
 ## Experimental results
