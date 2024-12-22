@@ -141,6 +141,7 @@ A commercial simulation platform that integrates agent-based models. It uses par
 o	State (Susceptible, Infected, Recovered). <br>
 o	daysInfected (number of days since infection). <br>
 Example of the array of 10x10 with indivituals states and daysInfected: <br>
+
 ![image](https://github.com/user-attachments/assets/9f48a581-20d7-4da1-be78-ac79d410d465)
 
 #### 3.2.2.	Generation: <br>
@@ -185,34 +186,34 @@ This means aprox. 12 minutes.
 This means aprox. 2 minutes.
 
 ##### 3.2.5.2	GPU
-•	Array size = 100, with display function
+•	Array size = 100, with display function <br>
  ![image](https://github.com/user-attachments/assets/a7e5836b-9862-4596-9082-e85d4fcbfe67)
 
-•	Array size = 100, without display function
+•	Array size = 100, without display function <br>
  ![image](https://github.com/user-attachments/assets/443805f0-b902-4fe8-bdd0-0b4ea9577de0)
 
-•	Array size = 10.000, with display function
+•	Array size = 10.000, with display function <br>
  ![image](https://github.com/user-attachments/assets/270dd138-01f1-482e-b168-cf90553a2b5b)
 
-•	Array size = 10.000, without display function
+•	Array size = 10.000, without display function <br>
  ![image](https://github.com/user-attachments/assets/38472f59-5889-4f82-a39f-18678cf602de)
 
 •	Array size = 1.000.000, with display function <br>
 More than 15 minutes. <br>
 
-•	Array size = 1.000.000, without display function
+•	Array size = 1.000.000, without display function <br>
  ![image](https://github.com/user-attachments/assets/21ae10f5-3655-4517-a05b-4378dfba8528)
 
 •	Array size = 100.000.000, with display function <br>
 More than 25 minutes. <br>
 
-•	Array size = 100.000.000, without display function
+•	Array size = 100.000.000, without display function <br>
  ![image](https://github.com/user-attachments/assets/5ad05215-df1a-497c-9de4-73f3ce8600af)
 
 
 3.3.	Graph of scalability of the parallel solution(s) in relation to the size of the input data set, compared to the single-threaded CPU solution
 
-| **CPU** |
+| **CPU**                                                               |
 | **Array Size**     | **With Display (ms)** | **Without Display (ms)** |
 |----------------|-------------------|----------------------|
 | 100           | 0                 | 0                    |
