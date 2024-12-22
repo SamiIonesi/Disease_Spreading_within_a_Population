@@ -214,8 +214,8 @@ More than 25 minutes. <br>
 3.3.	Graph of scalability of the parallel solution(s) in relation to the size of the input data set, compared to the single-threaded CPU solution
 
 | **CPU**                                                               |
-| **Array Size**     | **With Display (ms)** | **Without Display (ms)** |
 |--------------------|-----------------------|--------------------------|
+| **Array Size**     | **With Display (ms)** | **Without Display (ms)** |
 | 100               | 0                     | 0                        |
 | 10,000            | 42                    | 13                       |
 | 1,000,000         | 5,310                 | 1,072                    |
