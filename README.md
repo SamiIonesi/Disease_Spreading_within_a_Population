@@ -211,17 +211,33 @@ More than 25 minutes. <br>
  ![image](https://github.com/user-attachments/assets/5ad05215-df1a-497c-9de4-73f3ce8600af)
 
 
-3.3.	Graph of scalability of the parallel solution(s) in relation to the size of the input data set, compared to the single-threaded CPU solution
+### 3.3.	Graph of scalability of the parallel solution(s) in relation to the size of the input data set, compared to the single-threaded CPU solution
 
-**CPU Performance Data**
+#### 3.3.1. **CPU Performance Data**
 
-| Array Size     | With Display (ms) | Without Display (ms) |
-|----------------|-------------------|----------------------|
-| 100           | 0                 | 0                    |
-| 10,000        | 42                | 13                   |
-| 1,000,000     | 5,310             | 1,072                |
-| 100,000,000   | 705,695           | 125,923              |
+![image](https://github.com/user-attachments/assets/424967b8-0f3f-49eb-8874-aec7b627bd74)
 
+#### 3.3.2. **GPU Performance Data**
 
+![image](https://github.com/user-attachments/assets/fa70602e-0b94-4bd8-a87e-86cee49d4d27)
+
+### 3.4.	Analysis of the results:
+
+#### 3.4.1.	The fraction of end-to-end runtime dedicated to data transfer, for each CUDA implementation
+
+From the two tables above, we can draw some conclusions: <br>
+•	If we perform the simulation together with the display function, on the hardware specifications we used, the CPU does a better job. <br>
+•	On the other hand, if we do not use the display function, for grid_size > 10000, the GPU has a better performance than the CPU. The GPU performance increases logarithmically as the array size increases. <br>
+•	In the case of the GPU, the transfer time is very important and can influence the execution speed of the simulation. However, for the values in the table above, as the array size increases, the transfer time  decreases. For example: <br>
+o	for grid_size = 100, the transfer time is 60% of the total time <br>
+o	for grid_size = 10000, the transfer time is 40% of the total time <br>
+o	for grid_size = 1000000, the transfer time is 3% of the total time <br>
+o	for grid_size = 100000000, the transfer time is 1% of the total time <br>
+
+#### 3.4.2.	Estimate the speedup (for the best case) that CUDA implementations should provide, relative to the number of threads in the program and the actual number of processing contexts supported by the hardware used in the experiments. How far from these ideal performances are your implementations?
+
+#### 3.4.3.	Which of the CUDA implementations is faster? Does the answer meet your expectations?
+
+#### 3.4.4.	Which CUDA implementation is the slowest? Does the answer meet your expectations?
 
 
