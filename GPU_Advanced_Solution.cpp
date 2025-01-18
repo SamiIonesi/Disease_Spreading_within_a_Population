@@ -12,13 +12,13 @@ using namespace std;
 using namespace chrono;
 
 // Global parameters
-const int GRID_SIZE = 12; // Size of the simulation grid (GRID_SIZE x GRID_SIZE) max 32
+const int GRID_SIZE = 1000; // Size of the simulation grid (GRID_SIZE x GRID_SIZE) max 1024
 const int INFECTION_RADIUS = 1; // Radius for infection spread
 const float INFECTION_PROBABILITY = 0.3f; // Probability of infection
 const int RECOVERY_TIME = 10; // Number of days for recovery
-const int INITIAL_INFECTED = 4; // Initial number of infected cells
+const int INITIAL_INFECTED = GRID_SIZE / 5; // Initial number of infected cells
 const int SIMULATION_DAYS = 20; // Total number of simulation days
-const int NUM_STREAMS = 4; // Number of CUDA streams
+const int NUM_STREAMS = 5; // Number of CUDA streams (must divide GRID_SIZE)
 
 enum State { SUSCEPTIBLE, INFECTED, RECOVERED };
 
@@ -46,21 +46,23 @@ __global__ void simulateDayKernel(Cell* grid, Cell* nextGrid, curandState* state
     int j = blockIdx.y * blockDim.y + threadIdx.y + offset / GRID_SIZE;
     // Calculate local index in shared memory
     int localIdx = threadIdx.y * blockDim.x + threadIdx.x;
+
     if (localIdx == 0) {
-        int start = offset > 0 ? offset - GRID_SIZE : 0;
-        int finish = offset + (GRID_SIZE * GRID_SIZE) / NUM_STREAMS == GRID_SIZE * GRID_SIZE ? GRID_SIZE * GRID_SIZE : offset + (GRID_SIZE * GRID_SIZE) / NUM_STREAMS + GRID_SIZE;
+        int start = offset != 0 || blockIdx.y != 0 ? offset - GRID_SIZE + blockDim.x * blockDim.y * blockIdx.y : 0;
+        int finish = offset + blockDim.x * blockDim.y * (blockIdx.y + 1) == GRID_SIZE * GRID_SIZE ? GRID_SIZE * GRID_SIZE : offset + GRID_SIZE + blockDim.x * blockDim.y * (blockIdx.y + 1);
         for (int lclidx = start; lclidx < finish; lclidx++) {
-            sharedGrid[lclidx] = grid[lclidx];
+            sharedGrid[offset != 0 || blockIdx.y != 0 > 0 ? lclidx - start : lclidx + GRID_SIZE] = grid[lclidx];
         }
     }
-    __syncthreads(); // Ensure all threads have loaded data into shared memory
 
+    localIdx = localIdx + GRID_SIZE;
+    __syncthreads(); // Ensure all threads have loaded data into shared memory 
     if (i < GRID_SIZE && j < GRID_SIZE)
     {
         int idx = j * GRID_SIZE + i;
         curandState localState = states[idx]; // Load the thread's random state
 
-        Cell cell = sharedGrid[idx]; // Get the current cell's state
+        Cell cell = sharedGrid[localIdx]; // Get the current cell's state
         Cell nextCell = cell; // Initialize the next state for the cell
 
         if (cell.state == SUSCEPTIBLE) {
@@ -69,11 +71,11 @@ __global__ void simulateDayKernel(Cell* grid, Cell* nextGrid, curandState* state
             // Check neighbors within the infection radius
             for (int di = -INFECTION_RADIUS; di <= INFECTION_RADIUS; ++di) {
                 for (int dj = -INFECTION_RADIUS; dj <= INFECTION_RADIUS; ++dj) {
-                    int ni = i + di;
-                    int nj = j + dj;
+                    int ni = localIdx % GRID_SIZE + di;
+                    int nj = localIdx / GRID_SIZE + dj;
 
                     // Ensure neighbor is within bounds of the block
-                    if (ni >= 0 && ni < GRID_SIZE && nj >= 0 && nj < GRID_SIZE) {
+                    if (ni >= 0 && ni < blockDim.x && nj >= 0 && nj < blockDim.y + 2) {
                         if (sharedGrid[nj * GRID_SIZE + ni].state == INFECTED) {
                             // Check infection probability
                             if (curand_uniform(&localState) < 0.3f) {
@@ -131,8 +133,12 @@ void displayGrid(Cell* grid) {
             if (grid[i * GRID_SIZE + j].state == SUSCEPTIBLE) c = 'S';
             else if (grid[i * GRID_SIZE + j].state == INFECTED) c = 'I';
             else if (grid[i * GRID_SIZE + j].state == RECOVERED) c = 'R';
-
-            cout << c << grid[i * GRID_SIZE + j].daysInfected << " ";
+            if (grid[i * GRID_SIZE + j].daysInfected < 10) {
+                cout << c << grid[i * GRID_SIZE + j].daysInfected << "  ";
+            }
+            else {
+                cout << c << grid[i * GRID_SIZE + j].daysInfected << " ";
+            }
         }
         cout << "\n";
     }
@@ -154,7 +160,6 @@ void simulateDiseaseSpreadingUnified(Cell* hostGrid) {
     cudaMallocManaged(&grid, size); // Allocate Unified Memory
     cudaMalloc(&dStates, stateSize);
 
-    const int NUM_STREAMS = 4; // Number of CUDA streams
     cudaStream_t streams[NUM_STREAMS];
 
     // Create CUDA streams
@@ -162,16 +167,22 @@ void simulateDiseaseSpreadingUnified(Cell* hostGrid) {
         cudaStreamCreate(&streams[i]);
     }
 
-    dim3 threadsPerBlock(GRID_SIZE, GRID_SIZE / NUM_STREAMS);
-    dim3 numBlocks(1, 1);
+    int threadsPerBlockColumns = GRID_SIZE;
+    int threadsPerBlockLines = GRID_SIZE * (GRID_SIZE / NUM_STREAMS) > 1024 ? 1024 / GRID_SIZE : GRID_SIZE / NUM_STREAMS;
+    int numBlocksColumns = 1;
+    int numBlocksLines = (GRID_SIZE / NUM_STREAMS) % (threadsPerBlockLines) > 0 ? (GRID_SIZE / NUM_STREAMS) / (threadsPerBlockLines)+1 : (GRID_SIZE / NUM_STREAMS) / (threadsPerBlockLines);
+    cout << threadsPerBlockColumns << " " << threadsPerBlockLines << " " << numBlocksColumns << " " << numBlocksLines << '\n';
+
+    dim3 threadsPerBlock(threadsPerBlockColumns, threadsPerBlockLines);
+    dim3 numBlocks(numBlocksColumns, numBlocksLines);
 
     // Initialize the grid and random states
     memcpy(grid, hostGrid, size); // Copy initial data to unified memory
 
     // Divide initialization across streams
     for (int streamId = 0; streamId < NUM_STREAMS; ++streamId) {
-        int offset = streamId * ((GRID_SIZE * GRID_SIZE) / NUM_STREAMS);
-        initializeRandomStates << <numBlocks, threadsPerBlock, size, streams[streamId] >> > (dStates, offset);
+        int offset = streamId * (GRID_SIZE * (GRID_SIZE / NUM_STREAMS));
+        initializeRandomStates << <numBlocks, threadsPerBlock, 0, streams[streamId] >> > (dStates, offset);
     }
 
 
@@ -183,14 +194,14 @@ void simulateDiseaseSpreadingUnified(Cell* hostGrid) {
     // Synchronize after initialization
     cudaDeviceSynchronize();
 
-    displayGrid(grid);
+    //displayGrid(grid);
 
     for (int day = 0; day < SIMULATION_DAYS; ++day) {
         // Divide simulation into regions processed by separate streams
         cudaEventRecord(startSim);
         for (int streamId = 0; streamId < NUM_STREAMS; ++streamId) {
-            int offset = streamId * ((GRID_SIZE * GRID_SIZE) / NUM_STREAMS);
-            simulateDayKernel << <numBlocks, threadsPerBlock, GRID_SIZE* GRID_SIZE * sizeof(Cell), streams[streamId] >> > (grid, grid, dStates, offset);
+            int offset = streamId * (GRID_SIZE * (GRID_SIZE / NUM_STREAMS));
+            simulateDayKernel << <numBlocks, threadsPerBlock, (2 * GRID_SIZE + threadsPerBlock.x * threadsPerBlock.y) * sizeof(Cell), streams[streamId] >> > (grid, grid, dStates, offset);
         }
         cudaEventRecord(stopSim);
 
@@ -203,9 +214,9 @@ void simulateDiseaseSpreadingUnified(Cell* hostGrid) {
 
         // Display the grid (host and device share the same unified memory)
         cout << "Day " << day + 1 << " GPU Execution Time: " << timeSim << ":\n";
-        displayGrid(grid);
+        //displayGrid(grid);
     }
-
+    displayGrid(grid);
     // Free Unified Memory and other resources
     cudaFree(grid);
     cudaFree(dStates);
